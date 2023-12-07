@@ -11,7 +11,7 @@ import (
 
 var root = &cobra.Command{
 	Use:   "orba",
-	Short: "simple tool to organize you backfilling need",
+	Short: "simple tool to organize your backfilling need",
 }
 
 func main() {

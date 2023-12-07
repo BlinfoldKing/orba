@@ -60,7 +60,7 @@ var cmd = &cobra.Command{
 		defer conn.Close()
 
 		for i := 0; i < batchSize; i++ {
-			batchTxt := fmt.Sprintf("batch %d\t", i)
+			batchTxt := fmt.Sprintf("batch %d", i)
 
 			s, _ := yacspin.New(spinnerCfg)
 			s.Prefix(batchTxt)
@@ -82,12 +82,12 @@ var cmd = &cobra.Command{
 				continue
 			}
 
+			// TODO: make this into args
 			time.Sleep(1 * time.Second)
 			_ = s.Stop()
 		}
 
 		fmt.Println("\nall backfilling done")
-		// TODO: make this into args
 		return nil
 	},
 }
@@ -133,7 +133,11 @@ func backup(ctx context.Context, conn *pgxpool.Pool, batch int) error {
 	for _, row := range data {
 		line := make([]string, 0)
 		for _, key := range headers {
-			line = append(line, fmt.Sprintf("%v", row[key]))
+			val := ""
+			if row[key] != nil {
+				val = fmt.Sprintf("%v", row[key])
+			}
+			line = append(line, val)
 		}
 
 		_, err = backup.Write([]byte(strings.Join(line, ",") + "\n"))
